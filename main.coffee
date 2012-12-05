@@ -20,8 +20,8 @@ set = [
   [6, 9]
 ]
 
-data = set.map (i) -> new EuclideanVector(i...)
+data = set.map (i) -> new EuclideanVector(i)
 
 {centers} = kmeans {data, k, Vector: EuclideanVector}
 
-console.log centers.map (c) -> c.centroid
+console.log 'centroids', centers.map (c) -> c.centroid

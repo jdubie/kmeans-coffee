@@ -6,11 +6,11 @@ module.exports = ({data, k, n, Vector}) ->
 
   # initialize centers
   # TODO user heuristics to get distant initial points
-  centers = [0...k].map -> centroid: util.randomIndex(data)
+  #centers = [0...k].map -> centroid: util.randomIndex(data)
+  centers = [0...k].map (i) -> centroid: data[i+2] # TODO remove this
 
   # iterate til converge or n times
   for i in [0...n]
-    console.log 'iteration', i
     centers.forEach (center) -> center.points = [] # reintialize point assigments
      
     # compute distances to all centers
@@ -21,7 +21,7 @@ module.exports = ({data, k, n, Vector}) ->
       errors.push Math.min(dists...)
 
     error = errors.reduce(((x,y) -> x + y), 0)
-    console.log error
+    console.log 'iteration', i, 'error', error
 
     # reassign centers
     centers.forEach (center) -> center.centroid = Vector.center(center.points)

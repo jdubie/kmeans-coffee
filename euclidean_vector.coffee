@@ -15,15 +15,13 @@ module.exports = class EuclideanVector extends Vector
 
   # returns center of a set of instances of this class
   @center: (points) ->
-    points = points.map (point) -> point.arr
-    sumArrays = (x,y) ->
-      result = []
-      for xi, i in x
-        yi = y[i]
-        result[i] = xi + yi
-      return result
-
-    sum = points.reduce(sumArrays, util.zeros(points.length))
+    sum = []
+    for vec in points
+      for y, i in vec.arr
+        if sum[i]
+          sum[i] += y
+        else
+          sum[i] = y
     result = sum.map (x) -> x / points.length
     new EuclideanVector(result)
 
