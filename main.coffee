@@ -1,27 +1,32 @@
-EuclideanVector = require 'euclidean_vector'
-kmeans = require 'kmeans'
+fs = require 'fs'
+optimist = require 'optimist'
+kmeans = require './kmeans'
 
-k = 3
+argv = optimist
+  .usage('K-means clustering\ncoffee kmeans -k 3 -f euclidean.json')
+  .demand('k')
+  .describe('k','Number of clusters')
+  .default('k', 3)
+  .demand('f')
+  .alias('f', 'file')
+  .describe('f', 'json file containing data')
+  .default('f', 'euclidean.json')
+  .alias('v', 'vector')
+  .default('t', 'euclidean_vector')
+  .alias('t', 'type')
+  .describe('t', 'vector class implementation for data')
+  .argv
 
-set = [
-  [0, 1]
-  [1, 2]
-  [1, 3]
-  [8, 4]
-  [9, 3]
-  [8, 2]
-  [8, 8]
-  [8, 6]
-  [5, 8]
-  [7, 7]
-  [4, 7]
-  [3, 8]
-  [2, 9]
-  [6, 9]
-]
+# Vector implementation
+Vector = require("./#{argv.type}")
 
-data = set.map (i) -> new EuclideanVector(i)
+# read in data
+set = fs.readFileSync(argv.file)
+set = JSON.parse(set)
+data = set.map (i) -> new Vector(i)
 
-{centers} = kmeans {data, k, Vector: EuclideanVector}
+# Actually run k-means
+{centers} = kmeans {data, k: argv.k, Vector}
 
+# print result
 console.log 'centroids', centers.map (c) -> c.centroid

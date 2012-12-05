@@ -7,7 +7,6 @@ module.exports = ({data, k, n, Vector}) ->
   # initialize centers
   # TODO user heuristics to get distant initial points
   centers = util.randomWithReplacement(data.length, k)
-  console.log centers
   centers = centers.map (center) -> centroid: data[center]
 
   # iterate til converge or n times
@@ -30,5 +29,3 @@ module.exports = ({data, k, n, Vector}) ->
     centers.forEach (center) -> center.centroid = Vector.center(center.points)
 
   {centers}
-
-
