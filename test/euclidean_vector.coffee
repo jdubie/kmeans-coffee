@@ -5,7 +5,7 @@ describe 'EuclideanVector', ->
     it 'should work for two small vectors', ->
       v1 = new EuclideanVector(1, 1)
       v2 = new EuclideanVector(0, -1)
-      v1.comp(v2).should.be.within 2.236, 2.237
+      v1.comp(v2).should.eql 5
     it 'should be communitive', ->
       v1 = new EuclideanVector(1, 2)
       v2 = new EuclideanVector(-1, -2)

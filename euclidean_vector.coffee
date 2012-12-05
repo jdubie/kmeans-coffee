@@ -11,7 +11,7 @@ module.exports = class EuclideanVector extends Vector
       diff = e2 - e1
       term = Math.pow(diff, 2)
       sum += term
-    Math.sqrt(sum)
+    sum
 
   toString: ->
     @arr
