@@ -2,9 +2,23 @@ util = {}
 
 # randomIndex
 #
-# @param arr {Array}
-util.randomIndex = (arr) ->
-  arr[Math.floor(Math.random()*arr.length)]
+# @param n {Number}
+util.randomN = (n) ->
+  Math.floor(Math.random()*n)
+
+# randomWithReplacement
+#
+# @param k {Number}
+# @param n {Number}
+util.randomWithReplacement = (n,k) ->
+  result = []
+  for i in [0...k]
+    while true
+      index = util.randomN(n)
+      break unless index in result
+    result.push(index)
+  result
+
 
 # argmin
 #
