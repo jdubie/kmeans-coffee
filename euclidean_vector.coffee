@@ -25,4 +25,7 @@ module.exports = class EuclideanVector extends Vector
     result = sum.map (x) -> x / points.length
     new EuclideanVector(result)
 
+  @parse: (buffer) ->
+    data = JSON.parse(buffer)
+
   toString: -> @arr
