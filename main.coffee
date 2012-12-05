@@ -1,4 +1,4 @@
-Vector = require 'euclidean_vector'
+EuclideanVector = require 'euclidean_vector'
 kmeans = require 'kmeans'
 
 k = 3
@@ -20,7 +20,7 @@ set = [
   [6, 9]
 ]
 
-data = set.map (i) -> new Vector(i...)
+data = set.map (i) -> new EuclideanVector(i...)
 
 {centers} = kmeans {data, k, Vector: EuclideanVector}
 
