@@ -13,5 +13,8 @@ module.exports = class EuclideanVector extends Vector
       sum += term
     sum
 
+  # returns center of a set of instances of this class
+  @center: (points) ->
+
   toString: ->
     @arr
