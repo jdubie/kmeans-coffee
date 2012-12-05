@@ -4,6 +4,7 @@
   "dependencies": {
   },
   "devDependencies": {
-    "mocha": "*"
+    "mocha": "*",
+    "should": "*"
   }
 }
