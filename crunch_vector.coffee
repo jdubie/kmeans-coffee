@@ -56,16 +56,8 @@ module.exports = class CrunchVector extends Vector
     dist = 0
     for name, type of @constructor.features
       delta = comparator(type, @d[name], v.d[name])
-      dist += Math.pow(delta, 2)
+      dist += delta
     dist
-    #comp: (v) ->
-    #  sum = 0
-    #  for e2, i in v.arr
-    #    e1 = @arr[i]
-    #    diff = e2 - e1
-    #    term = Math.pow(diff, 2)
-    #    sum += term
-    #  sum
 
   @center: (points) ->
     result = {}

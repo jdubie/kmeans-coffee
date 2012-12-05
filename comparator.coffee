@@ -1,7 +1,8 @@
 module.exports = (type, point, centroid) ->
   switch type
     when 'array', 'number'
-      point - centroid
+      Math.pow(point - centroid, 2)
+
       #delta = point - centroid
       #return 0 if delta is 0
       #denom = Math.abs(point) + Math.abs(centroid)
