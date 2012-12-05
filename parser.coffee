@@ -22,8 +22,4 @@ parser.boolean = (input) -> if input then 1 else 0
 #zip_code
 
 module.exports = (type, input) ->
-  switch type
-    when 'array', 'number'
-      return NaN if input is null
-
   parser[type](input)

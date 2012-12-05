@@ -17,13 +17,11 @@ module.exports = ({data, k, n, Vector}) ->
     errors = []
     for vec in data
       dists = centers.map (center) -> vec.comp(center.centroid)
-      console.log dists
-      process.exit()
       centers[util.argmin(dists)].points.push(vec)
       errors.push util.min(dists)
 
     _error = errors.reduce(((x,y) -> x + y), 0)
-    break if error is _error
+    #break if error is _error
     error = _error
     console.log 'iteration', i, 'error', error
 

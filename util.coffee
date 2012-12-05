@@ -24,7 +24,11 @@ util.randomWithReplacement = (n,k) ->
 #
 # @param arr {Array.<Number>}
 util.argmin = (arr) ->
-  arr.indexOf(Math.min(arr...))
+  arr.indexOf(util.min(arr))
+
+#
+util.min = (arr) ->
+  Math.min(arr...)
 
 # zeros
 #

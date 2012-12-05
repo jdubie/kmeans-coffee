@@ -25,4 +25,6 @@ data = data.map (i) -> new Vector(i)
 {centers} = kmeans {data, k: argv.k, Vector}
 
 # print result
-console.log 'centroids', centers.map (c) -> c.centroid
+console.log 'centroids:'
+for center, i in centers
+  console.log 'center', i, (center.points.map (p) -> p.name)

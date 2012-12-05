@@ -6,16 +6,29 @@ merger     = require './merger'
 
 module.exports = class CrunchVector extends Vector
   @features:
-    # simple
-    competitions:         'array'
-    providerships:        'array'
-    acquisitions:         'array'
-    offices:              'array'
-    ipo:                  'boolean'
-    screenshots:          'array'
-    email_address:        'boolean'
-    number_of_employees:  'number'
-    relationships:        'array'
+    # arrays
+    products: 'array'
+    relationships: 'array'
+    competitions: 'array'
+    providerships: 'array'
+    funding_rounds: 'array'
+    investments: 'array'
+    acquisitions: 'array'
+    offices: 'array'
+    milestones: 'array'
+    video_embeds: 'array'
+    screenshots: 'array'
+    external_links: 'array'
+
+    #competitions:         'array'
+    #providerships:        'array'
+    #acquisitions:         'array'
+    #offices:              'array'
+    #ipo:                  'boolean'
+    #screenshots:          'array'
+    #email_address:        'boolean'
+    #number_of_employees:  'number'
+    #relationships:        'array'
 
     # location
     #zip_code:       'zip_code'
@@ -34,6 +47,7 @@ module.exports = class CrunchVector extends Vector
 
   constructor: (d) ->
     if d
+      @name = d.name
       @d = {}
       for name, type of @constructor.features
         @d[name] = parser(type, d[name])
@@ -42,8 +56,16 @@ module.exports = class CrunchVector extends Vector
     dist = 0
     for name, type of @constructor.features
       delta = comparator(type, @d[name], v.d[name])
-      dist += delta
+      dist += Math.pow(delta, 2)
     dist
+    #comp: (v) ->
+    #  sum = 0
+    #  for e2, i in v.arr
+    #    e1 = @arr[i]
+    #    diff = e2 - e1
+    #    term = Math.pow(diff, 2)
+    #    sum += term
+    #  sum
 
   @center: (points) ->
     result = {}
