@@ -3,6 +3,7 @@ util       = require './util'
 parser     = require './parser'
 comparator = require './comparator'
 merger     = require './merger'
+type       = require './type'
 
 module.exports = class CrunchVector extends Vector
 
@@ -26,11 +27,7 @@ module.exports = class CrunchVector extends Vector
     data = data.map (elem) -> JSON.parse(elem)
 
     # preprocess
-    matrix = data.map (elem) =>
-      e = {}
-      for field, type of @features
-        e[field] = parser(type, elem[field])
-      new CrunchVector(e, elem.name, elem.category_code)
+    matrix = @preprocess(data)
 
     # interpolate missing values
     @interpolate(matrix)
@@ -60,42 +57,61 @@ module.exports = class CrunchVector extends Vector
     result = {}
     for name, type of @features
       row = points.map (p) -> p.get(name)
-      result[name] = merger(row)
+      result[name] = merger(type, row)
     new CrunchVector(result, 'centroid')
 
   toString: -> @d
 
+  @preprocess: (data) ->
+    matrix = data.map (elem) =>
+      e = {}
+      for field, {preprocessing, type} of @features
+        value = elem[field]
+        value = type.transform(task, value) for task in preprocessing
+        e[field] = value
+      new CrunchVector(e, elem.name, elem.category_code)
+
   @features:
+
+    # text
+    overview: preprocessing: ['html', 'tags'], type: 'frequency'
+
+    # tags
+    tag_list: preprocessing: ['dash-tags', 'tags'], type: 'frequency'
+
+    # category
+    category_code: preprocessing: ['uniary', 'tags'], type: 'frequency'
+
     # arrays
-    products:       'array'
-    relationships:  'array'
-    competitions:   'array'
-    providerships:  'array'
-    funding_rounds: 'array'
-    investments:    'array'
-    acquisitions:   'array'
-    offices:        'array'
-    milestones:     'array'
-    video_embeds:   'array'
-    screenshots:    'array'
-    external_links: 'array'
+    #products:       'array'
+    #relationships:  'array'
+    #competitions:   'array'
+    #providerships:  'array'
+    #funding_rounds: 'array'
+    #investments:    'array'
+    #acquisitions:   'array'
+    #offices:        'array'
+    #milestones:     'array'
+    #video_embeds:   'array'
+    #screenshots:    'array'
+    #external_links: 'array'
 
-    # numbers
-    number_of_employees: 'number'
-    founded_year: 'number'
-    founded_month: 'number'
-    founded_day: 'number'
+    ## numbers
+    #number_of_employees: 'number'
+    #founded_year: 'number'
+    #founded_month: 'number'
+    #founded_day: 'number'
 
-    # currency
-    total_money_raised: 'currency'
+    ## currency
+    #total_money_raised: 'currency'
 
-    # boolean
-    ipo:                  'boolean'
-    email_address:        'boolean'
-    homepage_url:         'boolean'
-    blog_url:             'boolean'
-    blog_feed_url:        'boolean'
-    twitter_username:     'boolean'
+    ## boolean
+    #ipo:                  'boolean'
+    #email_address:        'boolean'
+    #homepage_url:         'boolean'
+    #blog_url:             'boolean'
+    #blog_feed_url:        'boolean'
+    #twitter_username:     'boolean'
 
     # location
     #zip_code:       'zip_code'
