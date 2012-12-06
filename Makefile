@@ -9,6 +9,6 @@ euclidean:
 	coffee main -k 3 -f euclidean.json -v euclidean_vector
 
 crunch:
-	coffee main -k 3 -f crunch.json -v crunch_vector
+	coffee main -k 3 -f crunch.ndj -v crunch_vector
 
 .PHONY: test

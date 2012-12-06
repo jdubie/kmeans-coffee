@@ -6,6 +6,14 @@ parser = {}
 
 parser.array = (input) -> input.length
 parser.number = (input) -> input
+parser.currency = (input) ->
+  [__, amount, unit] = input.match(/\C?[$£€]([0-9\.]+)([BMk]?)/)
+  amount = parseFloat(amount)
+  switch unit
+    when ''  then amount
+    when 'k' then amount * 1000
+    when 'M' then amount * 1000*1000
+    when 'B' then amount * 1000*1000*1000
 
 #
 # nullable types
@@ -22,4 +30,5 @@ parser.boolean = (input) -> if input then 1 else 0
 #zip_code
 
 module.exports = (type, input) ->
+  return unless input
   parser[type](input)

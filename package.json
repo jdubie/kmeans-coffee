@@ -2,7 +2,8 @@
   "name": "kmeans",
   "version": "0.0.1",
   "dependencies": {
-    "optimist": "*"
+    "optimist": "*",
+    "natural": "*"
   },
   "devDependencies": {
     "mocha": "*",
