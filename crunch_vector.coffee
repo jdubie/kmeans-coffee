@@ -3,7 +3,7 @@ util       = require './util'
 parser     = require './parser'
 comparator = require './comparator'
 merger     = require './merger'
-type       = require './type'
+types       = require './type'
 
 module.exports = class CrunchVector extends Vector
 
@@ -13,7 +13,7 @@ module.exports = class CrunchVector extends Vector
 
   comp: (v) ->
     dist = 0
-    for name, type of @constructor.features
+    for name, {type} of @constructor.features
       delta = comparator(type, @get(name), v.get(name))
       dist += delta
     dist
@@ -32,30 +32,25 @@ module.exports = class CrunchVector extends Vector
     # interpolate missing values
     @interpolate(matrix)
 
-    # divide by means and log
-    #@normalize(matrix)
-
     matrix
 
   @interpolate: (points) ->
     # numbers find means
-    for name, type of @features
-      numbers = points.map (vec) -> vec.get(name)
-      mean = util.mean(numbers)
-      points.forEach (vec) ->
-        value = vec.get(name)
-        if value
-          vec.set(name, value / mean)
-        else
-          vec.set(name, 1)
-        #if value
-        #  vec.set(name, value)
-        #else
-        #  vec.set(name, mean)
+    for name, {type} of @features
+      switch type
+        when 'number'
+          numbers = points.map (vec) -> vec.get(name)
+          mean = util.mean(numbers)
+          points.forEach (vec) ->
+            value = vec.get(name)
+            if value
+              vec.set(name, value / mean)
+            else
+              vec.set(name, 1)
   
   @center: (points) ->
     result = {}
-    for name, type of @features
+    for name, {type} of @features
       row = points.map (p) -> p.get(name)
       result[name] = merger(type, row)
     new CrunchVector(result, 'centroid')
@@ -63,66 +58,53 @@ module.exports = class CrunchVector extends Vector
   toString: -> @d
 
   @preprocess: (data) ->
-    matrix = data.map (elem) =>
+    data.map (elem) =>
       e = {}
-      for field, {preprocessing, type} of @features
+      for field, {preprocess, type} of @features
         value = elem[field]
-        value = type.transform(task, value) for task in preprocessing
+        value = types(task, value) for task in preprocess
         e[field] = value
       new CrunchVector(e, elem.name, elem.category_code)
 
   @features:
 
     # text
-    overview: preprocessing: ['html', 'tags'], type: 'frequency'
+    overview: preprocess: ['html', 'tags'], type: 'frequency'
 
     # tags
-    tag_list: preprocessing: ['dash-tags', 'tags'], type: 'frequency'
+    tag_list: preprocess: ['dash-tags', 'tags'], type: 'frequency'
 
     # category
-    category_code: preprocessing: ['uniary', 'tags'], type: 'frequency'
+    category_code: preprocess: ['uniary', 'tags'], type: 'frequency'
+
+    #zip_code:      preprocess: ['uniary', 'tags'], type: 'frequency'
+    #city:          preprocess: ['uniary', 'tags'], type: 'frequency'
+    #state_code:    preprocess: ['uniary', 'tags'], type: 'frequency'
+    #country_code:  preprocess: ['uniary', 'tags'], type: 'frequency'
 
     # arrays
-    #products:       'array'
-    #relationships:  'array'
-    #competitions:   'array'
-    #providerships:  'array'
-    #funding_rounds: 'array'
-    #investments:    'array'
-    #acquisitions:   'array'
-    #offices:        'array'
-    #milestones:     'array'
-    #video_embeds:   'array'
-    #screenshots:    'array'
-    #external_links: 'array'
+    products:       preprocess: ['array'], type: 'number'
+    relationships:  preprocess: ['array'], type: 'number'
+    competitions:   preprocess: ['array'], type: 'number'
+    providerships:  preprocess: ['array'], type: 'number'
+    funding_rounds: preprocess: ['array'], type: 'number'
+    investments:    preprocess: ['array'], type: 'number'
+    acquisitions:   preprocess: ['array'], type: 'number'
+    offices:        preprocess: ['array'], type: 'number'
+    milestones:     preprocess: ['array'], type: 'number'
+    video_embeds:   preprocess: ['array'], type: 'number'
+    screenshots:    preprocess: ['array'], type: 'number'
+    external_links: preprocess: ['array'], type: 'number'
 
-    ## numbers
-    #number_of_employees: 'number'
-    #founded_year: 'number'
-    #founded_month: 'number'
-    #founded_day: 'number'
+    # numbers
+    number_of_employees:  preprocess: [], type: 'number'
+    founded_year:         preprocess: [], type: 'number'
 
-    ## currency
-    #total_money_raised: 'currency'
+    # currency
+    #total_money_raised: preprocess: ['null', 'currency'], type: 'number'
 
-    ## boolean
-    #ipo:                  'boolean'
-    #email_address:        'boolean'
-    #homepage_url:         'boolean'
-    #blog_url:             'boolean'
-    #blog_feed_url:        'boolean'
-    #twitter_username:     'boolean'
-
-    # location
-    #zip_code:       'zip_code'
-    #city:           'city'
-    #state_code:     'state_code'
-    #country_code:   'country_code'
-    #latitude:       'latitude'
-    #longitude:      'longitude'
-
-    # TODO relationships pictures
-    # 'relationships_with_photo'
-    #overview:       'text'
-    #category_code:  '' # TODO important
-    #tag_list
+    # boolean
+    ipo:              preprocess: ['boolean'], type: 'number'
+    blog_url:         preprocess: ['boolean'], type: 'number'
+    blog_feed_url:    preprocess: ['boolean'], type: 'number'
+    twitter_username: preprocess: ['boolean'], type: 'number'

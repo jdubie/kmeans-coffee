@@ -30,6 +30,13 @@ util.argmin = (arr) ->
 util.min = (arr) ->
   Math.min(arr...)
 
+util.argmax = (arr) ->
+  arr.indexOf(util.max(arr))
+
+#
+util.max = (arr) ->
+  Math.max(arr...)
+
 # zeros
 #
 # @description returns an array 0 of length n
@@ -64,4 +71,9 @@ util.hist = (arr) ->
       counts[elem] = 1
   counts
 
+util.mag = (obj) ->
+  sum = 0
+  sum += value for key, value of obj
+  sum
+  
 module.exports = util
