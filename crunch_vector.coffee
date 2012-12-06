@@ -20,10 +20,9 @@ module.exports = class CrunchVector extends Vector
     screenshots: 'array'
     external_links: 'array'
 
-    #competitions:         'array'
-    #providerships:        'array'
-    #acquisitions:         'array'
-    #offices:              'array'
+    # numbers
+    number_of_employees: 'number'
+
     #ipo:                  'boolean'
     #screenshots:          'array'
     #email_address:        'boolean'
@@ -45,36 +44,61 @@ module.exports = class CrunchVector extends Vector
     #tag_list
     #total_money_raised: 'money'
 
-  constructor: (d) ->
-    if d
-      @name = d.name
-      @d = {}
-      for name, type of @constructor.features
-        @d[name] = parser(type, d[name])
+  constructor: (@d, name) ->
+    @name = @d.name
+    delete @d.name
+
+  get: (key) -> @d[key]
+  set: (key, value) -> @d[key] = value
 
   comp: (v) ->
     dist = 0
     for name, type of @constructor.features
-      delta = comparator(type, @d[name], v.d[name])
+      delta = comparator(type, @get(name), v.get(name))
       dist += delta
     dist
 
+  @parse: (buffer) ->
+    data = buffer.toString('utf8')
+    data = data.split('\n')
+
+    # TODO: add try catch around JSON.parse
+    data = data.filter (elem) -> elem isnt ''
+    data = data.map (elem) -> JSON.parse(elem)
+
+    # preprocess
+    matrix = data.map (elem) ->
+      e = {}
+      for field, type of features
+        e[field] = parser(type, elem[field])
+      new Vector(elem)
+
+    # interpolate missing values
+    @interpolate(matrix)
+
+    # divide by means and log
+    @normalize(matrix)
+
+    result
+
+  @interpolate: (points) ->
+    # numbers find means
+    for name, type of @features
+      switch type
+        when 'number'
+          numbers = points.map (vec) -> point.get(name)
+          console.log numbers
+          mean = util.mean(numbers)
+          points.forEach (point) ->
+            point.set(name, mean) unless point.get(name)
+  
   @center: (points) ->
     result = {}
     for name, type of @features
-      row = points.map (p) -> p.d[name]
+      row = points.map (p) -> p.get(name)
       result[name] = merger(type, row)
     v = new CrunchVector()
     v.d = result
     v
-  
-  @parse: (buffer) ->
-    data = buffer.toString('utf8')
-    result = data.split('\n')
-
-    # TODO: add try catch around JSON.parse
-    result = result.filter (elem) -> elem isnt ''
-    result = result.map (elem) -> JSON.parse(elem)
-    result
 
   toString: ->

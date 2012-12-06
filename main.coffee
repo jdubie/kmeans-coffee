@@ -19,7 +19,9 @@ Vector = require("./#{argv.vector}")
 # read in data
 buffer = fs.readFileSync(argv.file)
 data = Vector.parse(buffer)
-data = data.map (i) -> new Vector(i)
+
+console.log(data)
+process.exit()
 
 # Actually run k-means
 {centers} = kmeans {data, k: argv.k, Vector}
