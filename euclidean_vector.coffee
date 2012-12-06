@@ -27,5 +27,6 @@ module.exports = class EuclideanVector extends Vector
 
   @parse: (buffer) ->
     data = JSON.parse(buffer)
+    data.map (elem) -> new EuclideanVector(elem)
 
   toString: -> @arr

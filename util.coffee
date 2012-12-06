@@ -41,7 +41,6 @@ util.zeros = (n) -> [0...n].map -> 0
 # @param arr {Array.<Number>}
 util.mean = (arr) ->
   arr = arr.filter (elem) -> elem?
-  console.log arr
   util.assert(arr.length isnt 0, 'Trying to take mean of empty array')
   arr.reduce(util.sum, 0) / arr.length
 
@@ -55,5 +54,14 @@ util.assert = (condition, message) ->
   unless condition
     console.error(message)
     process.exit()
+
+util.hist = (arr) ->
+  counts = {}
+  for elem in arr
+    if counts[elem]
+      counts[elem]++
+    else
+      counts[elem] = 1
+  counts
 
 module.exports = util

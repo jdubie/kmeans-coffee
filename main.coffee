@@ -1,6 +1,7 @@
 fs = require 'fs'
 optimist = require 'optimist'
 kmeans = require './kmeans'
+util = require './util'
 
 argv = optimist
   .usage('K-means clustering\ncoffee kmeans -k 3 -f euclidean.json')
@@ -20,13 +21,13 @@ Vector = require("./#{argv.vector}")
 buffer = fs.readFileSync(argv.file)
 data = Vector.parse(buffer)
 
-console.log(data)
-process.exit()
-
 # Actually run k-means
 {centers} = kmeans {data, k: argv.k, Vector}
 
 # print result
 console.log 'centroids:'
 for center, i in centers
-  console.log 'center', i, (center.points.map (p) -> p.name)
+  if center.points[0].name
+    console.log i, center.points.map (point) -> point.name
+  else
+    console.log center.centroid.toString()
